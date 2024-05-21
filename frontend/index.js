@@ -11,6 +11,22 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
 
   let mentors = [] // fix this
   let learners = [] // fix this
+  //async function fetchData() {
+    try {
+        let mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
+        let learnersResponse = await axios.get('http://localhost:3003/api/learners');
+
+        mentors = mentorsResponse.data;
+        learners = learnersResponse.data;
+
+        //console.log(learners);
+        //console.log(mentors);
+    } catch (error) {
+        console.error('Error fetching data: ', error);
+    }
+//}
+
+
 
   // 👆 ==================== TASK 1 END ====================== 👆
 
@@ -28,18 +44,74 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
   //     "Grace Hopper"
   //   ]`
   // }
+  //learners.mentor = mentors.id;
+  /*fetchData().then(() => {
+    learners.forEach((learner) => {
+      let id = learner.id
+      let fullName = learner.fullName
+      let email = learner.email
+      let mentor = learner.mentors
+      let mentorNames = []
+      mentors.forEach((mentorId) => {
+        let matchingMentor = mentors.find(mentor => mentor.id === mentorId);
+        if (matchingMentor) {
+          matchingMentor.push(mentorNames);
+        }
+
+      })
+      if (matchingMentor) {
+          console.log(`Learner ${learner.name} is mentored by ${matchingMentor.name}`);
+      }   else {
+          console.log(`Learner ${learner.name} has no mentor`);
+      }
+      
+    });
+    if (mentorNames < 0) {
+      console.log(`Learner ${fullName} is mentored by ${mentorNames.join(',')}` )
+    } else {
+      console.log(`Learner ${fullName} has no mentor`)
+    }
+  })*/
+  //fetchData().then(() => {
+    learners.forEach((learner) => {
+        let id = learner.id;
+        let fullName = learner.fullName;
+        let email = learner.email;
+        let mentorIds = learner.mentors;
+        let mentorNames = [];
+        
+
+        mentorIds.forEach((mentorId) => {
+            let matchingMentor = mentors.find(mentor => mentor.id === mentorId);
+            //console.log('matchingMentor:', matchingMentor);
+            if (matchingMentor) {
+              mentorNames.push(`${matchingMentor.firstName} ${matchingMentor.lastName}`);
+            }
+        });
+        learner.mentors = mentorNames;
+        
+
+        /*if (mentorNames.length > 0) {
+            console.log(`Learner ${fullName} is mentored by ${mentorNames.join(', ')}`);
+        } else {
+            console.log(`Learner ${fullName} has no mentor`);
+        }*/
+        
+    })
+//});
 
   // 👆 ==================== TASK 2 END ====================== 👆
 
   const cardsContainer = document.querySelector('.cards')
+  console.log(cardsContainer);
   const info = document.querySelector('.info')
   info.textContent = 'No learner is selected'
-
-
+  
   // 👇 ==================== TASK 3 START ==================== 👇
 
   for (let learner of learners) { // looping over each learner object
-
+    
+    console.log(learner.fullName);
     // 🧠 Flesh out the elements that describe each learner
     // ❗ Give the elements below their (initial) classes, textContent and proper nesting.
     // ❗ Do not change the variable names, as the code that follows depends on those names.
@@ -48,10 +120,32 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
     // ❗ Inspect the mock site closely to understand what the initial texts and classes look like!
 
     const card = document.createElement('div')
-    const heading = document.createElement('h3')
+    card.classList.add('card')
+
+    const heading = document.createElement('h3');
+    heading.textContent = `${learner.fullName}`;
+    card.appendChild(heading);
+
     const email = document.createElement('div')
-    const mentorsHeading = document.createElement('h4')
+    email.textContent = `${learner.email}`;
+    card.appendChild(email);
+
+    const mentorHeading = document.createElement('h4')
+    mentorHeading.textContent = `Mentors`;
+    mentorHeading.classList.add('closed')
+    card.appendChild(mentorHeading);
+
     const mentorsList = document.createElement('ul')
+    for (let mentor of learner.mentors) {
+      let li = document.createElement('li');
+      li.textContent = mentor;
+      mentorsList.appendChild(li);
+    }
+
+
+    
+    
+    
 
     // 👆 ==================== TASK 3 END ====================== 👆
 
